@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "target": "es6",
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["packages/*"]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
