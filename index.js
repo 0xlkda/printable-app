@@ -11,14 +11,44 @@ const AppEvents = createAppEvents(ShopManager)
 const UserCommands = createUserCommands(ShopManager)
 const DisplayCommands = createDisplayCommands(ShopManager)
 
-const everything = keys(UserCommands).concat(keys(AppEvents))
+const userCommands = keys(UserCommands)
+const appEvents = keys(AppEvents)
+const everything = userCommands.concat(appEvents)
 
-ShopMonitor(everything, AppEvents)
+ShopMonitor(userCommands, AppEvents)
 DisplayMonitor(everything, DisplayCommands)
+
+function ShopMonitor(events, appEvents) {
+  events.forEach((event) => {
+    ShopManager.on(event, async ({ type, detail }) => {
+      
+      // tracking 
+      Logger.log('User', type, detail)
+
+      switch (event) {
+      case 'UPLOAD_PHOTO':
+        // do something
+        await sleep(250)
+        appEvents.PHOTO_UPLOADED()
+        break
+
+      case 'SUBMIT':
+        // do something
+        await sleep(250)
+        appEvents.PRODUCT_PERSONALIZE_SUBMITTED()
+        break
+
+      default:
+        break
+      }
+    })
+  })
+}
 
 function DisplayMonitor(events, display) {
   events.forEach((event) => {
     ShopManager.on(event, async ({ type, detail }) => {
+      
       // tracking 
       Logger.log('UI', type, detail)
 
@@ -37,35 +67,6 @@ function DisplayMonitor(events, display) {
 
       case 'PRODUCT_PERSONALIZE_SUBMITTED':
         display.SHOW_THANK_YOU()
-        break
-
-      default:
-        break
-      }
-    })
-  })
-}
-
-function ShopMonitor(events, appHandlers) {
-  events.forEach((event) => {
-    ShopManager.on(event, async ({ type, detail }) => {
-      const isAppEvent = keys(appHandlers).includes(event)
-      const label = isAppEvent ? 'App' : 'User'
-
-      // tracking 
-      Logger.log(label, type, detail)
-
-      switch (event) {
-      case 'UPLOAD_PHOTO':
-        // do something
-        await sleep(250)
-        appHandlers.PHOTO_UPLOADED()
-        break
-
-      case 'SUBMIT':
-        // do something
-        await sleep(250)
-        appHandlers.PRODUCT_PERSONALIZE_SUBMITTED()
         break
 
       default:
