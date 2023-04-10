@@ -31,6 +31,7 @@ const UserCommands = (handler) => {
     INSERT_ARTIST: handler.lazyEmit('INSERT_ARTIST'),
   }
 
+  // reference command to commands[command].key
   Object.keys(commands).forEach(command => {
     commands[command].key = command
   })

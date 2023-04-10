@@ -8,7 +8,7 @@ const AppEvents = (bus) => {
     SHUT_DOWN: bus.lazyEmit('SHUT_DOWN')
   }
 
-  // reference event by events[event].key
+  // reference event to events[event].key
   keys(events).forEach(event => {
     events[event].key = event
   })

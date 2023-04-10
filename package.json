@@ -17,6 +17,8 @@
     "vite": "^4.2.1"
   },
   "dependencies": {
-    "medkit": "github:0xlkda/medkit"
+    "medkit": "github:0xlkda/medkit",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
