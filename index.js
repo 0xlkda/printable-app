@@ -4,79 +4,44 @@ import { createUserCommands } from './user-commands'
 import { createAppEvents } from './app-events'
 import { createDisplayCommands } from './display-commands'
 import { isPhoto, isText } from './predicate'
-import { keys, sleep } from './util'
+import { Monitor } from './monitor'
+import { sleep } from './util'
 
-const ShopManager = createEventBus('shop-manager', document)
+const ShopManager = createEventBus('shop-manager', 'browser', { debug: true, logger: Logger })
 const AppEvents = createAppEvents(ShopManager)
 const UserCommands = createUserCommands(ShopManager)
 const DisplayCommands = createDisplayCommands(ShopManager)
 
-const userCommands = keys(UserCommands)
-const appEvents = keys(AppEvents)
-const everything = userCommands.concat(appEvents)
+// returned function to turn off all listeners
+const monitorEvents = Monitor(ShopManager, {
+  [UserCommands.UPLOAD_PHOTO.key]: [
+    DisplayCommands.RENDER_PHOTO_UPLOADING
+  ],
 
-ShopMonitor(userCommands, AppEvents)
-DisplayMonitor(everything, DisplayCommands)
+  [UserCommands.SUBMIT.key]: [
+    DisplayCommands.RENDER_LOADING_SCREEN,
+  ],
 
-function ShopMonitor(events, appEvents) {
-  events.forEach((event) => {
-    ShopManager.on(event, async ({ type, detail }) => {
-      
-      // tracking 
-      Logger.log('User', type, detail)
+  [AppEvents.PHOTO_UPLOADED.key]: [
+    DisplayCommands.RENDER_PHOTO,
+  ],
 
-      switch (event) {
-      case 'UPLOAD_PHOTO':
-        // do something
-        await sleep(250)
-        appEvents.PHOTO_UPLOADED()
-        break
+  [AppEvents.PRODUCT_PERSONALIZE_SUBMITTED.key]: [
+    DisplayCommands.SHOW_THANK_YOU,
+  ],
 
-      case 'SUBMIT':
-        // do something
-        await sleep(250)
-        appEvents.PRODUCT_PERSONALIZE_SUBMITTED()
-        break
+  [AppEvents.SHUT_DOWN.key]: [
+    () => {
+      monitorEvents.forEach(off => off())
+      Logger.log('shutdown')
+    }
+  ]
+})
 
-      default:
-        break
-      }
-    })
-  })
-}
+// main
+start()
 
-function DisplayMonitor(events, display) {
-  events.forEach((event) => {
-    ShopManager.on(event, async ({ type, detail }) => {
-      
-      // tracking 
-      Logger.log('UI', type, detail)
-
-      switch (event) {
-      case 'UPLOAD_PHOTO':
-        display.RENDER_PHOTO_UPLOADING()
-        break
-
-      case 'PHOTO_UPLOADED':
-        display.RENDER_PHOTO()
-        break
-
-      case 'SUBMIT':
-        display.RENDER_LOADING_SCREEN()
-        break
-
-      case 'PRODUCT_PERSONALIZE_SUBMITTED':
-        display.SHOW_THANK_YOU()
-        break
-
-      default:
-        break
-      }
-    })
-  })
-}
-
-(async () => {
+async function start() {
   const product = await API.getProduct('product.json').catch(Logger.error)
   if (!product) return
 
@@ -84,28 +49,29 @@ function DisplayMonitor(events, display) {
   const texts = product?.objects.filter(isText)
 
   AppEvents.PRODUCT_LOADED({ photos, texts })
-  await sleep(250)
 
   UserCommands.UPLOAD_PHOTO('photo-1.png'),
+  AppEvents.PHOTO_UPLOADED()
+
   UserCommands.UPLOAD_PHOTO('photo-2.png'),
-  UserCommands.UPLOAD_PHOTO('photo-3.png'),
-  await sleep(250)
+  AppEvents.PHOTO_UPLOADED()
 
   UserCommands.ASSIGN_PHOTO({ photo: 'photo-1', target: 'slot-1' })
   UserCommands.ASSIGN_PHOTO({ photo: 'photo-2', target: 'slot-2' })
-  UserCommands.ASSIGN_PHOTO({ photo: 'photo-3', target: 'slot-3' })
-  await sleep(250)
 
   UserCommands.INSERT_TEXT('text-1')
   UserCommands.INSERT_TEXT('text-2')
-  await sleep(250)
 
   UserCommands.SHOW_PREVIEW()
-  await sleep(250)
 
   UserCommands.SUBMIT()
-})()
+  AppEvents.PRODUCT_PERSONALIZE_SUBMITTED()
 
+  await sleep(3000)
+  AppEvents.SHUT_DOWN()
+}
+
+// After 3s, app shutdown, both buttons do nothing
 const uploadBtn = document.createElement('button')
 uploadBtn.textContent = 'Upload'
 uploadBtn.onclick = () => UserCommands.UPLOAD_PHOTO('photo-zzz')

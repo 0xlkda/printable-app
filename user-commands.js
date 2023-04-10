@@ -1,34 +1,42 @@
-const UserCommands = (handler) => ({
-  SHOW_PREVIEW: handler.emit('SHOW_PREVIEW'),
-  SUBMIT: handler.emit('SUBMIT'),
+const UserCommands = (handler) => {
+  const commands = {
+    SHOW_PREVIEW: handler.lazyEmit('SHOW_PREVIEW'),
+    SUBMIT: handler.lazyEmit('SUBMIT'),
 
-  SELECT_PRODUCT: handler.emit('SELECT_PRODUCT'),
-  CHANGE_PRODUCT: handler.emit('CHANGE_PRODUCT'),
-  CHANGE_PRODUCT_VARIANT: handler.emit('CHANGE_PRODUCT_VARIANT'),
+    SELECT_PRODUCT: handler.lazyEmit('SELECT_PRODUCT'),
+    CHANGE_PRODUCT: handler.lazyEmit('CHANGE_PRODUCT'),
+    CHANGE_PRODUCT_VARIANT: handler.lazyEmit('CHANGE_PRODUCT_VARIANT'),
 
-  UPLOAD_PHOTO: handler.emit('UPLOAD_PHOTO'),
-  ASSIGN_PHOTO: handler.emit('ASSIGN_PHOTO'),
-  REPLACE_PHOTO: handler.emit('REPLACE_PHOTO'),
-  CROP_PHOTO: handler.emit('CROP_PHOTO'),
-  FLIP_PHOTO: handler.emit('FLIP_PHOTO'),
-  INSERT_TEXT: handler.emit('INSERT_TEXT'),
+    UPLOAD_PHOTO: handler.lazyEmit('UPLOAD_PHOTO'),
+    ASSIGN_PHOTO: handler.lazyEmit('ASSIGN_PHOTO'),
+    REPLACE_PHOTO: handler.lazyEmit('REPLACE_PHOTO'),
+    CROP_PHOTO: handler.lazyEmit('CROP_PHOTO'),
+    FLIP_PHOTO: handler.lazyEmit('FLIP_PHOTO'),
+    INSERT_TEXT: handler.lazyEmit('INSERT_TEXT'),
 
-  REQUEST_CUSTOM_PHOTO_SHAPE: handler.emit('REQUEST_CUSTOM_PHOTO_SHAPE'),
-  REQUEST_CUSTOM_ALPHABET_ART: handler.emit('REQUEST_CUSTOM_ALPHABET_ART'),
+    REQUEST_CUSTOM_PHOTO_SHAPE: handler.lazyEmit('REQUEST_CUSTOM_PHOTO_SHAPE'),
+    REQUEST_CUSTOM_ALPHABET_ART: handler.lazyEmit('REQUEST_CUSTOM_ALPHABET_ART'),
 
-  SELECT_LOCATION: handler.emit('SELECT_LOCATION'),
-  SELECT_MAP_THEME: handler.emit('SELECT_MAP_THEME'),
-  SELECT_MAP_PIN: handler.emit('SELECT_MAP_PIN'),
+    SELECT_LOCATION: handler.lazyEmit('SELECT_LOCATION'),
+    SELECT_MAP_THEME: handler.lazyEmit('SELECT_MAP_THEME'),
+    SELECT_MAP_PIN: handler.lazyEmit('SELECT_MAP_PIN'),
 
-  INSERT_DATE: handler.emit('INSERT_DATE'),
-  SELECT_STAR_COLOR: handler.emit('SELECT_STAR_COLOR'),
-  SELECT_STAR_BACKGROUND_COLOR: handler.emit('SELECT_STAR_BACKGROUND_COLOR'),
+    INSERT_DATE: handler.lazyEmit('INSERT_DATE'),
+    SELECT_STAR_COLOR: handler.lazyEmit('SELECT_STAR_COLOR'),
+    SELECT_STAR_BACKGROUND_COLOR: handler.lazyEmit('SELECT_STAR_BACKGROUND_COLOR'),
 
-  SELECT_SONG: handler.emit('SELECT_SONG'),
-  INSERT_TITLE: handler.emit('INSERT_TITLE'),
-  INSERT_LYRIC: handler.emit('INSERT_LYRIC'),
-  INSERT_ARTIST: handler.emit('INSERT_ARTIST'),
-})
+    SELECT_SONG: handler.lazyEmit('SELECT_SONG'),
+    INSERT_TITLE: handler.lazyEmit('INSERT_TITLE'),
+    INSERT_LYRIC: handler.lazyEmit('INSERT_LYRIC'),
+    INSERT_ARTIST: handler.lazyEmit('INSERT_ARTIST'),
+  }
+
+  Object.keys(commands).forEach(command => {
+    commands[command].key = command
+  })
+
+  return commands
+}
 
 export function createUserCommands(handler) {
   return UserCommands(handler)
