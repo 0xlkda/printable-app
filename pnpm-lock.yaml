@@ -2,7 +2,7 @@ lockfileVersion: '6.0'
 
 dependencies:
   medkit:
-    specifier: link:~/code/medkit
+    specifier: github:0xlkda/medkit
     version: link:../../medkit
 
 devDependencies:

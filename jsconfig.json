@@ -6,7 +6,8 @@
     "target": "es6",
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["packages/*"]
+      "@app/*": ["./packages/*"],
+      "medkit": ["~/code/medkit"]
     }
   },
   "exclude": [

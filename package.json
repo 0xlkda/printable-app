@@ -17,6 +17,6 @@
     "vite": "^4.2.1"
   },
   "dependencies": {
-    "medkit": "link:~/code/medkit"
+    "medkit": "github:0xlkda/medkit"
   }
 }
