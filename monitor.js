@@ -13,6 +13,7 @@ export function Monitor(manager, brief) {
     listeners.push(listener)
   })
 
-  return listeners
+  return () => {
+    listeners.forEach(off => off())
+  }
 }
-

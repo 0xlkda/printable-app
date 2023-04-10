@@ -7,23 +7,37 @@ import { isPhoto, isText } from './predicate'
 import { Monitor } from './monitor'
 import { sleep } from './util'
 
-const ShopManager = createEventBus('shop-manager', 'browser', { debug: true, logger: Logger })
+const ShopManager = createEventBus('shop-manager', 'browser', { logEmit: true, logger: Logger })
 const AppEvents = createAppEvents(ShopManager)
 const UserCommands = createUserCommands(ShopManager)
 const DisplayCommands = createDisplayCommands(ShopManager)
 
 // returned function to turn off all listeners
-const monitorEvents = Monitor(ShopManager, {
+const removeAllEvents = Monitor(ShopManager, {
+  // USER
   [UserCommands.UPLOAD_PHOTO.key]: [
     DisplayCommands.RENDER_PHOTO_UPLOADING
   ],
 
+  [UserCommands.ASSIGN_PHOTO.key]: [
+    DisplayCommands.RENDER_PHOTO
+  ],
+
+  [UserCommands.INSERT_TEXT.key]: [
+    DisplayCommands.RENDER_TEXT
+  ],
+
   [UserCommands.SUBMIT.key]: [
-    DisplayCommands.RENDER_LOADING_SCREEN,
+    DisplayCommands.RENDER_SUBMITTING_SCREEN,
+  ],
+
+  // APP
+  [AppEvents.PRODUCT_LOADED.key]: [
+    DisplayCommands.RENDER_APP,
   ],
 
   [AppEvents.PHOTO_UPLOADED.key]: [
-    DisplayCommands.RENDER_PHOTO,
+    DisplayCommands.RENDER_UPLOAD_SUCCESS,
   ],
 
   [AppEvents.PRODUCT_PERSONALIZE_SUBMITTED.key]: [
@@ -32,8 +46,7 @@ const monitorEvents = Monitor(ShopManager, {
 
   [AppEvents.SHUT_DOWN.key]: [
     () => {
-      monitorEvents.forEach(off => off())
-      Logger.log('shutdown')
+      removeAllEvents()
     }
   ]
 })
@@ -51,13 +64,17 @@ async function start() {
   AppEvents.PRODUCT_LOADED({ photos, texts })
 
   UserCommands.UPLOAD_PHOTO('photo-1.png'),
-  AppEvents.PHOTO_UPLOADED()
+  AppEvents.PHOTO_UPLOADED('photo-1')
 
   UserCommands.UPLOAD_PHOTO('photo-2.png'),
-  AppEvents.PHOTO_UPLOADED()
+  AppEvents.PHOTO_UPLOADED('photo-2')
 
-  UserCommands.ASSIGN_PHOTO({ photo: 'photo-1', target: 'slot-1' })
-  UserCommands.ASSIGN_PHOTO({ photo: 'photo-2', target: 'slot-2' })
+  UserCommands.UPLOAD_PHOTO('photo-3.png'),
+  AppEvents.PHOTO_UPLOADED('photo-3')
+
+  UserCommands.ASSIGN_PHOTO({ photo: 'photo-1', target: 'position-1' })
+  UserCommands.ASSIGN_PHOTO({ photo: 'photo-2', target: 'position-2' })
+  UserCommands.ASSIGN_PHOTO({ photo: 'photo-3', target: 'position-3' })
 
   UserCommands.INSERT_TEXT('text-1')
   UserCommands.INSERT_TEXT('text-2')

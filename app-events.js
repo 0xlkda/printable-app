@@ -1,15 +1,15 @@
-const AppEvents = (handler) => {
+import { keys } from './util'
+
+const AppEvents = (bus) => {
   const events = {
-    PRODUCT_LOADED: handler.lazyEmit('PRODUCT_LOADED'),
-    PRODUCT_PERSONALIZE_SUBMITTED: handler.lazyEmit('PRODUCT_PERSONALIZE_SUBMITTED'),
-
-    PHOTO_UPLOADED: handler.lazyEmit('PHOTO_UPLOADED'),
-
-    SHUT_DOWN: handler.lazyEmit('SHUT_DOWN')
+    PRODUCT_LOADED: bus.lazyEmit('PRODUCT_LOADED'),
+    PRODUCT_PERSONALIZE_SUBMITTED: bus.lazyEmit('PRODUCT_PERSONALIZE_SUBMITTED'),
+    PHOTO_UPLOADED: bus.lazyEmit('PHOTO_UPLOADED'),
+    SHUT_DOWN: bus.lazyEmit('SHUT_DOWN')
   }
 
-
-  Object.keys(events).forEach(event => {
+  // reference event by events[event].key
+  keys(events).forEach(event => {
     events[event].key = event
   })
 
