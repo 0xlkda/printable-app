@@ -1,9 +1,8 @@
-export {
- ...Object.prototype
-}
+export const keys = Object.keys
+export const values = Object.values
 
 export function reduce(init, arrLike, reducer) {
-  return arrLike.reduce(reducer, init)
+  return Array.from(arrLike).reduce(reducer, init)
 }
 
 export function sleep(ms) {
