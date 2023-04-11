@@ -28,12 +28,14 @@ const removeAllEvents = Monitor(ShopManager, {
   ],
 
   [UserCommands.SUBMIT.key]: [
-    DisplayCommands.RENDER_SUBMITTING_SCREEN,
+    DisplayCommands.RENDER_SUBMITTING_SCREEN
   ],
 
   // APP
   [AppEvents.PRODUCT_LOADED.key]: [
+    DisplayCommands.MOUNT_APP,
     DisplayCommands.RENDER_APP,
+    DisplayCommands.REMOVE_LOADING_SCREEN,
   ],
 
   [AppEvents.PHOTO_UPLOADED.key]: [
@@ -51,10 +53,10 @@ const removeAllEvents = Monitor(ShopManager, {
   ]
 })
 
-// main
 start()
-
 async function start() {
+  DisplayCommands.RENDER_LOADING_SCREEN()
+
   const product = await API.getProduct('product.json').catch(Logger.error)
   if (!product) return
 
@@ -62,39 +64,4 @@ async function start() {
   const texts = product?.objects.filter(isText)
 
   AppEvents.PRODUCT_LOADED({ photos, texts })
-
-  UserCommands.UPLOAD_PHOTO('photo-1.png'),
-  AppEvents.PHOTO_UPLOADED('photo-1')
-
-  UserCommands.UPLOAD_PHOTO('photo-2.png'),
-  AppEvents.PHOTO_UPLOADED('photo-2')
-
-  UserCommands.UPLOAD_PHOTO('photo-3.png'),
-  AppEvents.PHOTO_UPLOADED('photo-3')
-
-  UserCommands.ASSIGN_PHOTO({ photo: 'photo-1', target: 'position-1' })
-  UserCommands.ASSIGN_PHOTO({ photo: 'photo-2', target: 'position-2' })
-  UserCommands.ASSIGN_PHOTO({ photo: 'photo-3', target: 'position-3' })
-
-  UserCommands.INSERT_TEXT('text-1')
-  UserCommands.INSERT_TEXT('text-2')
-
-  UserCommands.SHOW_PREVIEW()
-
-  UserCommands.SUBMIT()
-  AppEvents.PRODUCT_PERSONALIZE_SUBMITTED()
-
-  await sleep(3000)
-  AppEvents.SHUT_DOWN()
 }
-
-// After 3s, app shutdown, both buttons do nothing
-const uploadBtn = document.createElement('button')
-uploadBtn.textContent = 'Upload'
-uploadBtn.onclick = () => UserCommands.UPLOAD_PHOTO('photo-zzz')
-document.body.appendChild(uploadBtn)
-
-const submitBtn = document.createElement('button')
-submitBtn.textContent = 'Submit'
-submitBtn.onclick = () => UserCommands.SUBMIT()
-document.body.appendChild(submitBtn)

@@ -5,9 +5,15 @@ export function Monitor(manager, brief) {
   const events = keys(brief)
 
   events.forEach(event => {
-    const listener = manager.on(event, (e) => {
-      const handlers = brief[event]
-      handlers?.forEach(handle => handle(e.detail))
+    const listener = manager.on(event, async (e) => {
+      const handlers = brief[event] ??= []
+      for (const handle of handlers) {
+        if (handle.constructor.name === 'AsyncFunction') {
+          await handle(e.detail)
+        } else {
+          handle(e.detail)
+        }
+      }
     })
 
     listeners.push(listener)
