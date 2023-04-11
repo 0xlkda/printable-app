@@ -3,16 +3,16 @@ import * as API from './api'
 import { createUserCommands } from './user-commands'
 import { createAppEvents } from './app-events'
 import { createDisplayCommands } from './display-commands'
-import { isPhoto, isText } from './predicate'
+import { createCanvasCommands } from './canvas-commands'
+import { isBackground, isMask, isText, isPath } from './predicate'
 import { Monitor } from './monitor'
-import { sleep } from './util'
 
 const ShopManager = createEventBus('shop-manager', 'browser', { logEmit: true, logger: Logger })
 const AppEvents = createAppEvents(ShopManager)
 const UserCommands = createUserCommands(ShopManager)
 const DisplayCommands = createDisplayCommands(ShopManager)
+const CanvasCommands = createCanvasCommands(ShopManager)
 
-// returned function to turn off all listeners
 const removeAllEvents = Monitor(ShopManager, {
   // USER
   [UserCommands.UPLOAD_PHOTO.key]: [
@@ -32,10 +32,18 @@ const removeAllEvents = Monitor(ShopManager, {
   ],
 
   // APP
-  [AppEvents.PRODUCT_LOADED.key]: [
+  [AppEvents.STARTED.key]: [
     DisplayCommands.MOUNT_APP,
+    DisplayCommands.RENDER_LOADING_SCREEN,
+  ],
+
+  [AppEvents.PRODUCT_LOADED.key]: [
     DisplayCommands.RENDER_APP,
-    DisplayCommands.REMOVE_LOADING_SCREEN,
+    CanvasCommands.CREATE_CANVAS,
+  ],
+
+  [AppEvents.CANVAS_CREATED.key]: [
+    DisplayCommands.MOUNT_CANVAS,
   ],
 
   [AppEvents.PHOTO_UPLOADED.key]: [
@@ -47,21 +55,29 @@ const removeAllEvents = Monitor(ShopManager, {
   ],
 
   [AppEvents.SHUT_DOWN.key]: [
-    () => {
+    (error) => {
+      Logger.error(error)
       removeAllEvents()
     }
   ]
 })
 
 start()
+  .catch(AppEvents.SHUT_DOWN)
+
 async function start() {
-  DisplayCommands.RENDER_LOADING_SCREEN()
+  AppEvents.STARTED()
 
   const product = await API.getProduct('product.json').catch(Logger.error)
   if (!product) return
 
-  const photos = product?.objects.filter(isPhoto)
-  const texts = product?.objects.filter(isText)
+  const background = product.objects.find(isBackground)
+  const masks = product.objects.filter(isMask)
+  const texts = product.objects.filter(isText)
+  const fonts = Array.from(new Set(texts.map(text => text.fontFamily)))
+  const paths = product.objects.filter(isPath)
+  const detail = { background, masks, texts, fonts, paths }
+  Logger.log(detail, product)
 
-  AppEvents.PRODUCT_LOADED({ photos, texts })
+  AppEvents.PRODUCT_LOADED(detail)
 }

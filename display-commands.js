@@ -7,15 +7,22 @@ function div(text, id) {
   return div
 }
 
-const [mount, render] = createApp()
+const { mount, render } = createApp()
 
 const DisplayCommands = {
-  // app start
+  // app
   MOUNT_APP: () => {
     mount()
   },
+
   RENDER_APP: (props) => {
-    render(props)
+    render({ ...props, state: 'LOADED' })
+  },
+
+  MOUNT_CANVAS: (canvas) => {
+    document
+      .getElementById('personalize-app')
+      .appendChild(canvas.wrapperEl)
   },
 
   // photo handle
@@ -36,15 +43,12 @@ const DisplayCommands = {
 
   // loading state
   RENDER_LOADING_SCREEN: () => {
-    document.body.append(div('loading...', 'loading'))
-  },
-  REMOVE_LOADING_SCREEN: () => {
-    document.getElementById('loading')?.remove()
+    render({ state: 'LOADING' })
   },
 
   // submit state
   RENDER_SUBMITTING_SCREEN: () => {
-    document.body.append(div('submitting...'))
+    render({ state: 'SUBMITTING' })
   },
 
   // last step

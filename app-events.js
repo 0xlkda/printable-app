@@ -1,11 +1,13 @@
 import { keys } from './util'
 
-const AppEvents = (bus) => {
+const AppEvents = (handler) => {
   const events = {
-    PRODUCT_LOADED: bus.lazyEmit('PRODUCT_LOADED'),
-    PRODUCT_PERSONALIZE_SUBMITTED: bus.lazyEmit('PRODUCT_PERSONALIZE_SUBMITTED'),
-    PHOTO_UPLOADED: bus.lazyEmit('PHOTO_UPLOADED'),
-    SHUT_DOWN: bus.lazyEmit('SHUT_DOWN')
+    STARTED: handler.lazyEmit('STARTED'),
+    PRODUCT_LOADED: handler.lazyEmit('PRODUCT_LOADED'),
+    PRODUCT_PERSONALIZE_SUBMITTED: handler.lazyEmit('PRODUCT_PERSONALIZE_SUBMITTED'),
+    CANVAS_CREATED: handler.lazyEmit('CANVAS_CREATED'),
+    PHOTO_UPLOADED: handler.lazyEmit('PHOTO_UPLOADED'),
+    SHUT_DOWN: handler.lazyEmit('SHUT_DOWN')
   }
 
   // reference event to events[event].key
