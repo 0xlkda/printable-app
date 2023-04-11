@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "vite --port 3000 --host --open",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "postinstall": "pnpx link"
   },
   "author": "0xlkda",
   "license": "BSD-3-Clause",
