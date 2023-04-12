@@ -20,9 +20,7 @@ const DisplayCommands = {
   },
 
   MOUNT_CANVAS: (canvas) => {
-    document
-      .getElementById('personalize-app')
-      .appendChild(canvas.wrapperEl)
+    document.getElementById('personalize-app').prepend(canvas.wrapperEl)
   },
 
   // photo handle

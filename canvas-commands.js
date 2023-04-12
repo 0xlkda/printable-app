@@ -1,3 +1,4 @@
+import { Logger } from 'medkit'
 import { fabric } from 'fabric'
 import * as API from './api'
 
@@ -21,13 +22,39 @@ function enlivenObjects(objects, handle) {
   fabric.util.enlivenObjects(objects, handle)
 }
 
+function updateContainerHeight(canvas) {
+  requestAnimationFrame(() => {
+    canvas.wrapperEl.style.height = `${canvas.getElement().offsetHeight}px`
+  })
+}
+
+
+// override fabric
+globalThis.canvas = new fabric.Canvas('', {
+  containerClass: 'personalize-canvas-container',
+  enableRetinaScaling: false,
+  allowTouchScrolling: true,
+})
+
+function setBorderVisualFor(objects) {
+  return (value) => objects.forEach(type => {
+    type.prototype.set({
+      padding: value,
+      borderScaleFactor: value,
+      controls: false,
+    })
+  })
+}
+
+const setBorderVisual = setBorderVisualFor([fabric.Object, fabric.Textbox])
+
 const CanvasCommands = (handler) => {
   const commands = {
-    CREATE_CANVAS: ({ background, fonts, masks, texts, paths }) => {
-      const canvas = new fabric.Canvas()
-      canvas.setWidth(background.width)
-      canvas.setHeight(background.height)
-      canvas.setZoom(0.5)
+    CREATE_CANVAS: ({ background, size, fonts, masks, texts, paths }) => {
+      setBorderVisual(Math.floor(size.width / 200))
+
+      canvas.setDimensions(size)
+      canvas.setDimensions({ width: '100%', height: 'auto' }, { cssOnly: true })
 
       enlivenObjects([background], ([item]) => {
         canvas.insertAt(item, 0)
@@ -48,6 +75,10 @@ const CanvasCommands = (handler) => {
             handler.emit('CANVAS_CREATED', canvas)
           })
         })
+    },
+
+    RESIZE: () => {
+      updateContainerHeight(canvas)
     }
   }
 

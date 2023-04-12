@@ -1,5 +1,5 @@
 module.exports = {
   packages: [
-    "/Users/alex/code/medkit"
+    '/Users/alex/code/medkit'
   ]
 }

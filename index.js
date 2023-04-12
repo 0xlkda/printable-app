@@ -5,9 +5,10 @@ import { createAppEvents } from './app-events'
 import { createDisplayCommands } from './display-commands'
 import { createCanvasCommands } from './canvas-commands'
 import { isBackground, isMask, isText, isPath } from './predicate'
+import { orientationChanged } from './util'
 import { Monitor } from './monitor'
 
-const ShopManager = createEventBus('shop-manager', 'browser', { logEmit: true, logger: Logger })
+const ShopManager = createEventBus('shop-manager', 'browser', { logEmit: false, logger: Logger })
 const AppEvents = createAppEvents(ShopManager)
 const UserCommands = createUserCommands(ShopManager)
 const DisplayCommands = createDisplayCommands(ShopManager)
@@ -44,6 +45,7 @@ const removeAllEvents = Monitor(ShopManager, {
 
   [AppEvents.CANVAS_CREATED.key]: [
     DisplayCommands.MOUNT_CANVAS,
+    CanvasCommands.RESIZE,
   ],
 
   [AppEvents.PHOTO_UPLOADED.key]: [
@@ -71,13 +73,19 @@ async function start() {
   const product = await API.getProduct('product.json').catch(Logger.error)
   if (!product) return
 
+  const size = product.size
   const background = product.objects.find(isBackground)
   const masks = product.objects.filter(isMask)
   const texts = product.objects.filter(isText)
   const fonts = Array.from(new Set(texts.map(text => text.fontFamily)))
   const paths = product.objects.filter(isPath)
-  const detail = { background, masks, texts, fonts, paths }
+  const detail = { background, size, masks, texts, fonts, paths }
   Logger.log(detail, product)
 
   AppEvents.PRODUCT_LOADED(detail)
+
+  // device events
+  const handleResize = () => orientationChanged().then(CanvasCommands.RESIZE)
+  window.addEventListener('orientationchange', handleResize)
+  window.addEventListener('deviceorientation', handleResize)
 }
