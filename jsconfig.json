@@ -3,12 +3,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "target": "es6",
-    "baseUrl": ".",
-    "paths": {
-      "@app/*": ["packages/*"],
-      "medkit": ["~/code/medkit"]
-    }
+    "target": "es6"
   },
   "exclude": [
     "node_modules"

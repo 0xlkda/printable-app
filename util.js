@@ -3,6 +3,19 @@ export const values = Object.values
 
 export function noop() { }
 
+export function debounce(callback, delay) {
+  let timeout
+  return () => {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(callback, delay)
+  }
+}
+
+export function interval(callback, delay) {
+  const timerId = setInterval(callback, delay)
+  return () => clearInterval(timerId)
+}
+
 export function unique(arrayLike) {
   return Array.from(new Set(arrayLike))
 }

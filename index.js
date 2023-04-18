@@ -5,8 +5,9 @@ import { createAppEvents } from './app-events'
 import { createDisplayCommands } from './display-commands'
 import { createCanvasCommands } from './canvas-commands'
 import { isBackground, isMask, isNotMask, isText, isPath } from './predicate'
-import { orientationChanged, unique } from './util'
+import { unique } from './util'
 import { Monitor } from './monitor'
+import { debounceResize }  from './browser'
 
 const ShopManager = createEventBus('shop-manager', 'browser', { logEmit: false, logger: Logger })
 const AppEvents = createAppEvents(ShopManager)
@@ -85,7 +86,5 @@ async function start() {
   AppEvents.PRODUCT_LOADED(detail)
 
   // device events
-  const handleResize = () => orientationChanged().then(CanvasCommands.RESIZE)
-  window.addEventListener('orientationchange', handleResize)
-  window.addEventListener('deviceorientation', handleResize)
+  debounceResize(CanvasCommands.RESIZE)
 }

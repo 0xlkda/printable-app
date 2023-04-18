@@ -1,6 +1,5 @@
 import { sendRequest } from 'medkit'
-import { encode } from './util'
-import { sleep } from './util'
+import { encode, sleep } from './util'
 
 const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT
 const CLOUDFRONT = import.meta.env.VITE_CLOUDFRONT

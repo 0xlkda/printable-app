@@ -19,13 +19,6 @@ async function addFontsToDocument(fontNames) {
   }
 }
 
-function updateContainerHeight(canvas) {
-  requestAnimationFrame(() => {
-    canvas.wrapperEl.style.height = `${canvas.getElement().offsetHeight}px`
-  })
-}
-
-
 globalThis.canvas = createCanvas({
   containerClass: 'personalize-canvas-container',
   enableRetinaScaling: false,
@@ -39,7 +32,10 @@ const CanvasCommands = (handler) => {
       setBorderWidth(Math.floor(size.width / 200))
 
       canvas.setDimensions(size)
-      canvas.setDimensions({ width: '100%', height: 'auto' }, { cssOnly: true })
+      canvas.setDimensions({
+        width: '100%', maxWidth: '720px',
+        height: 'auto', maxHeight: '720px'
+      }, { cssOnly: true })
 
       enlivenObjects([background], ([item]) => {
         canvas.insertAt(item, 0)
@@ -65,7 +61,10 @@ const CanvasCommands = (handler) => {
     },
 
     RESIZE: () => {
-      updateContainerHeight(canvas)
+      const canvasEl = canvas.getElement()
+      const container = canvas.wrapperEl
+      if (!container) return
+      container.style.height = `${canvasEl.offsetHeight}px`
     }
   }
 
