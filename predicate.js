@@ -11,6 +11,10 @@ export function isMask(input) {
   return input.id?.startsWith('mask-')
 }
 
+export function isNotMask(input) {
+  return !isMask(input)
+}
+
 export function isText(input) {
   return input.id?.startsWith('text-')
 }

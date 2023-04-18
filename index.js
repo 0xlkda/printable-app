@@ -4,8 +4,8 @@ import { createUserCommands } from './user-commands'
 import { createAppEvents } from './app-events'
 import { createDisplayCommands } from './display-commands'
 import { createCanvasCommands } from './canvas-commands'
-import { isBackground, isMask, isText, isPath } from './predicate'
-import { orientationChanged } from './util'
+import { isBackground, isMask, isNotMask, isText, isPath } from './predicate'
+import { orientationChanged, unique } from './util'
 import { Monitor } from './monitor'
 
 const ShopManager = createEventBus('shop-manager', 'browser', { logEmit: false, logger: Logger })
@@ -77,8 +77,8 @@ async function start() {
   const background = product.objects.find(isBackground)
   const masks = product.objects.filter(isMask)
   const texts = product.objects.filter(isText)
-  const fonts = Array.from(new Set(texts.map(text => text.fontFamily)))
-  const paths = product.objects.filter(isPath)
+  const fonts = unique(texts.map(text => text.fontFamily))
+  const paths = product.objects.filter(isNotMask).filter(isPath)
   const detail = { background, size, masks, texts, fonts, paths }
   Logger.log(detail, product)
 

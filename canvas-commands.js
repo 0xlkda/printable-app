@@ -1,6 +1,7 @@
-import { fabric } from 'fabric'
 import * as API from './api'
 import { applyMaskConfig } from './config-mask'
+import { applyTextConfig } from './config-text'
+import { createCanvas, enlivenObjects, setBorderWidth } from './fabric-util'
 
 function createFontLoader({ name, filename }) {
   return new FontFace(name, `url(${API.createFontURL(filename)})`)
@@ -18,10 +19,6 @@ async function addFontsToDocument(fontNames) {
   }
 }
 
-function enlivenObjects(objects, handle) {
-  fabric.util.enlivenObjects(objects, handle)
-}
-
 function updateContainerHeight(canvas) {
   requestAnimationFrame(() => {
     canvas.wrapperEl.style.height = `${canvas.getElement().offsetHeight}px`
@@ -29,30 +26,17 @@ function updateContainerHeight(canvas) {
 }
 
 
-// override fabric
-globalThis.canvas = new fabric.Canvas('', {
+globalThis.canvas = createCanvas({
   containerClass: 'personalize-canvas-container',
   enableRetinaScaling: false,
   allowTouchScrolling: true,
   selection: false
 })
 
-function setBorderVisualFor(objects) {
-  return (value) => objects.forEach(type => {
-    type.prototype.set({
-      padding: value,
-      borderScaleFactor: value,
-      controls: false,
-    })
-  })
-}
-
-const setBorderVisual = setBorderVisualFor([fabric.Object, fabric.Textbox])
-
 const CanvasCommands = (handler) => {
   const commands = {
     CREATE_CANVAS: ({ background, size, fonts, masks, texts, paths }) => {
-      setBorderVisual(Math.floor(size.width / 200))
+      setBorderWidth(Math.floor(size.width / 200))
 
       canvas.setDimensions(size)
       canvas.setDimensions({ width: '100%', height: 'auto' }, { cssOnly: true })
@@ -61,18 +45,19 @@ const CanvasCommands = (handler) => {
         canvas.insertAt(item, 0)
       })
 
+      enlivenObjects(paths, (objects) => {
+        canvas.add(...objects)
+      })
+
       enlivenObjects(masks, (objects) => {
         const items = objects.map(applyMaskConfig)
         canvas.add(...items)
       })
 
-      enlivenObjects(paths, (items) => {
-        // canvas.add(...items)
-      })
-
       addFontsToDocument(fonts.map(font => font.replace(/[']+/g, '')))
         .then(() => {
-          enlivenObjects(texts, (items) => {
+          enlivenObjects(texts, (objects) => {
+            const items = objects.map(applyTextConfig)
             canvas.add(...items)
             handler.emit('CANVAS_CREATED', canvas)
           })
