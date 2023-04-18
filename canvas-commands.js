@@ -1,6 +1,6 @@
-import { Logger } from 'medkit'
 import { fabric } from 'fabric'
 import * as API from './api'
+import { applyMaskConfig } from './config-mask'
 
 function createFontLoader({ name, filename }) {
   return new FontFace(name, `url(${API.createFontURL(filename)})`)
@@ -34,6 +34,7 @@ globalThis.canvas = new fabric.Canvas('', {
   containerClass: 'personalize-canvas-container',
   enableRetinaScaling: false,
   allowTouchScrolling: true,
+  selection: false
 })
 
 function setBorderVisualFor(objects) {
@@ -60,12 +61,13 @@ const CanvasCommands = (handler) => {
         canvas.insertAt(item, 0)
       })
 
-      enlivenObjects(masks, (items) => {
+      enlivenObjects(masks, (objects) => {
+        const items = objects.map(applyMaskConfig)
         canvas.add(...items)
       })
 
       enlivenObjects(paths, (items) => {
-        canvas.add(...items)
+        // canvas.add(...items)
       })
 
       addFontsToDocument(fonts.map(font => font.replace(/[']+/g, '')))
