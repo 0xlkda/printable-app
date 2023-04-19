@@ -37,7 +37,7 @@ export function lockMovement(object) {
 }
 
 export function decorate(target, rules) {
-  return reduce(target, rules, (target, rule) => rule(target))
+  return reduce(clone(target), rules, (target, rule) => rule(target))
 }
 
 export function render(object) {
