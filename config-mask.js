@@ -1,39 +1,40 @@
 import COLORS from './colors'
-import { clone, lockMovement, decorate, render } from './fabric-util'
+import { render, lockMovement, decorate } from './fabric-util'
 
 const handPointer = (i) => i.set({ hoverCursor: 'pointer' })
 const normalize = (i) => i.set({ fill: COLORS.primary, opacity: 0.1 })
 const highlight = (i, opacity = 0.5) => i.set({ fill: COLORS.primary, opacity })
 const absolutePositioned = (i) => i.set({ absolutePositioned: true })
 
+const handleMouseOut = e => render(normalize(e.target))
+const handleMouseOver = e => render(highlight(e.target))
+
+function enableMouseOver(i) {
+  i.on('mouseover', handleMouseOver)
+  i.on('mouseout', handleMouseOut)
+  return i
+}
+
+function disableMouseOver(i) {
+  i.off('mouseover')
+  i.off('mouseout')
+  return i
+}
+
 export function applyMaskConfig(obj) {
-  const item = clone(obj)
-  decorate(item, [normalize, handPointer, lockMovement, absolutePositioned])
-
-  const handleMouseOut = e => render(normalize(e.target))
-  const handleMouseOver = e => render(highlight(e.target))
-
-  function enableMouseOver() {
-    item.on('mouseover', handleMouseOver)
-    item.on('mouseout', handleMouseOut)
-  }
-
-  function disableMouseOver() {
-    item.off('mouseover')
-    item.off('mouseout')
-  }
+  const item = decorate(obj, [normalize, handPointer, lockMovement, absolutePositioned])
 
   // events setup 
-  enableMouseOver()
+  enableMouseOver(item)
 
   item.on({
-    'selected': e => {
-      disableMouseOver()
-      render(highlight(e.target))
+    'selected': () => {
+      disableMouseOver(item)
+      render(highlight(item))
     },
-    'deselected': e => {
-      enableMouseOver()
-      render(normalize(e.target))
+    'deselected': () => {
+      enableMouseOver(item)
+      render(normalize(item))
     }
   })
 
