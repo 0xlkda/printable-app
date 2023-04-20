@@ -1,19 +1,12 @@
-import { Logger, createMessageBus } from 'medkit'
+import { Logger } from 'medkit'
 import { debounceResize } from '@/libs/browser'
 import { unique } from '@/utils'
 import * as API from '@/api'
-import { createContext } from '@/app/context'
+import { AppEvents, AppCommands, UserCommands } from '@/app/context'
 import { Monitor } from '@/app/monitor'
 import { isBackground, isMask, isNotMask, isText, isPath } from '@/app/predicate'
 
-const ShopManager = createMessageBus('shop-manager', 'browser', { logEmit: false, logger: Logger })
-const {
-  AppEvents,
-  AppCommands,
-  UserCommands,
-} = createContext(ShopManager)
-
-const removeAllEvents = Monitor(ShopManager, {
+const removeAllEvents = Monitor({
   [UserCommands.SELECT_MASK.key]: [
     AppCommands.DISPLAY_PHOTO_EDITOR,
   ],
@@ -31,7 +24,7 @@ const removeAllEvents = Monitor(ShopManager, {
     AppCommands.DISPLAY_CANVAS,
   ],
 
-  [AppEvents.CANVAS_CREATED.key]: [
+  [AppEvents.CANVAS_LOADED.key]: [
     AppCommands.RESIZE_CANVAS,
   ],
 

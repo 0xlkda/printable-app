@@ -13,9 +13,9 @@ export default defineConfig({
       '@/app': require('path').resolve(__dirname, 'app/'),
       '@/libs': require('path').resolve(__dirname, 'libs/'),
       '@/api': require('path').resolve(__dirname, 'api/'),
-      '@/commands': require('path').resolve(__dirname, 'commands/'),
       '@/config': require('path').resolve(__dirname, 'config/'),
       '@/components': require('path').resolve(__dirname, 'components/'),
+      '@/commands': require('path').resolve(__dirname, 'commands/'),
       '@/utils': require('path').resolve(__dirname, 'utils/'),
       '@/js': require('path').resolve(require('os').homedir(), 'code/js/')
     }

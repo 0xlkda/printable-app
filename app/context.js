@@ -1,34 +1,26 @@
-import { createCommands as createAppCommands } from '@/commands/app'
-import { reduce } from '@/utils'
+import { createMessage } from '@/app/monitor'
+import * as cmds from '@/app/commands'
 
-function createMessage(handler, eventNames) {
-  return reduce({}, eventNames, (events, eventName) => {
-    events[eventName] = handler.lazyEmit(eventName)
-    events[eventName].key = eventName
-    return events
-  })
+export const AppEvents = {
+  STARTED: createMessage('STARTED'),
+  PRODUCT_LOADED: createMessage('PRODUCT_LOADED'),
+  CANVAS_LOADED: createMessage('CANVAS_LOADED'),
+  PRODUCT_PERSONALIZE_SUBMITTED: createMessage('PRODUCT_PERSONALIZE_SUBMITTED'),
+  SHUT_DOWN: createMessage('SHUT_DOWN')
 }
 
-export function createContext(manager) {
-  const AppEvents = createMessage(manager, [
-    'STARTED',
-    'PRODUCT_LOADED',
-    'PRODUCT_PERSONALIZE_SUBMITTED',
-    'CANVAS_CREATED',
-    'PHOTO_UPLOADED',
-    'SHUT_DOWN'
-  ])
+export const UserCommands = {
+  SELECT_MASK: createMessage('SELECT_MASK'),
+  SELECT_TEXT: createMessage('SELECT_TEXT'),
+}
 
-  const UserCommands = createMessage(manager, [
-    'SELECT_MASK',
-    'SELECT_TEXT',
-  ])
-
-  const AppCommands = createAppCommands(manager)
-
-  return {
-    AppEvents,
-    AppCommands,
-    UserCommands
-  }
+export const AppCommands = {
+  DISPLAY_APP: cmds.displayApp,
+  DISPLAY_CANVAS: cmds.displayCanvas,
+  RESIZE_CANVAS: cmds.resizeCanvas,
+  DISPLAY_PHOTO_EDITOR: cmds.displayPhotoEditor,
+  DISPLAY_TEXT_EDITOR: cmds.displayTextEditor,
+  DISPLAY_LOADING_SCREEN: cmds.displayLoadingScreen,
+  DISPLAY_SUBMITTING_SCREEN: cmds.displaySubmittingScreen,
+  SHOW_THANK_YOU: cmds.showThankYou
 }

@@ -58,7 +58,7 @@ export default function App({ detail }) {
 
   return (
     <React.StrictMode>
-      <div id="personalize-app-editor">
+      <div className="personalize-app-editor">
         {module}
       </div>
     </React.StrictMode>

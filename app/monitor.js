@@ -1,12 +1,20 @@
+import { Logger, createMessageBus } from 'medkit'
 import { keys } from '@/utils'
 
-export function Monitor(manager, brief) {
-  const listeners = []
-  const events = keys(brief)
+export const MessageBus = createMessageBus('message-manager', 'browser', { logEmit: false, logger: Logger })
 
-  events.forEach(event => {
-    const listener = manager.on(event, async (e) => {
-      const handlers = brief[event] ??= []
+export function createMessage(name, { instant } = { instant: false }) {
+  const send = instant ? MessageBus.emit : MessageBus.lazyEmit
+  const message = send.call(MessageBus, name)
+  message.key = name
+  return message
+}
+
+export function Monitor(brief) {
+  const messages = keys(brief)
+  const listeners = messages.map(message => {
+    return MessageBus.on(message, async (e) => {
+      const handlers = brief[message] ??= []
       for (const handle of handlers) {
         if (handle.constructor.name === 'AsyncFunction') {
           await handle(e.detail)
@@ -15,8 +23,6 @@ export function Monitor(manager, brief) {
         }
       }
     })
-
-    listeners.push(listener)
   })
 
   return () => {
