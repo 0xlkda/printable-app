@@ -1,4 +1,4 @@
-import { createMessage } from '@/app/monitor'
+import { createMessage } from '@/libs/monitor'
 import * as cmds from '@/app/commands'
 
 export const AppEvents = {

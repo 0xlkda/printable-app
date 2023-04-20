@@ -1,9 +1,9 @@
 import { Logger } from 'medkit'
 import { debounceResize } from '@/libs/browser'
+import { Monitor } from '@/libs/monitor'
 import { unique } from '@/utils'
 import * as API from '@/api'
 import { AppEvents, AppCommands, UserCommands } from '@/app/context'
-import { Monitor } from '@/app/monitor'
 import { isBackground, isMask, isNotMask, isText, isPath } from '@/app/predicate'
 
 const removeAllEvents = Monitor({
