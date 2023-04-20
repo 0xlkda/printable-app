@@ -6,6 +6,9 @@
     "target": "es6",
     "baseUrl": ".",
     "paths":  {
+      "@/app": ["./app/index"],
+      "@/app/*": ["./app/*"],
+
       "@/libs": ["./libs/index"],
       "@/libs/*": ["./libs/*"],
 

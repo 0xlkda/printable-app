@@ -2,9 +2,9 @@ import { Logger, createMessageBus } from 'medkit'
 import { debounceResize } from '@/libs/browser'
 import { unique } from '@/utils'
 import * as API from '@/api'
-import { isBackground, isMask, isNotMask, isText, isPath } from './predicate'
-import { Monitor } from './monitor'
-import { createContext } from './context'
+import { createContext } from '@/app/context'
+import { Monitor } from '@/app/monitor'
+import { isBackground, isMask, isNotMask, isText, isPath } from '@/app/predicate'
 
 const ShopManager = createMessageBus('shop-manager', 'browser', { logEmit: false, logger: Logger })
 const {

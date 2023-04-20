@@ -1,5 +1,5 @@
 import { createCommands as createAppCommands } from '@/commands/app'
-import { reduce } from './utils'
+import { reduce } from '@/utils'
 
 function createMessage(handler, eventNames) {
   return reduce({}, eventNames, (events, eventName) => {
