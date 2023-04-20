@@ -9,9 +9,12 @@
       "@/libs/*": ["./libs/*"],
       "@/config/*": ["./config/*"],
       "@/assets/*": ["./assets/*"],
+      "@/api": ["./api/index.js"],
+      "@/api/*": ["./api/*"],
       "@/utils": ["./utils/index.js"],
       "@/utils/*": ["./utils/*"],
-      "@/components/*": ["./components/*"]
+      "@/components/*": ["./components/*"],
+      "@/commands/*": ["./commands/*"]
     }
   },
   "exclude": [

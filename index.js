@@ -1,7 +1,7 @@
 import { Logger, createMessageBus } from 'medkit'
 import { debounceResize } from '@/libs/browser'
 import { unique } from '@/utils'
-import * as API from './api'
+import * as API from '@/api'
 import { isBackground, isMask, isNotMask, isText, isPath } from './predicate'
 import { Monitor } from './monitor'
 import { createContext } from './context'
@@ -9,55 +9,34 @@ import { createContext } from './context'
 const ShopManager = createMessageBus('shop-manager', 'browser', { logEmit: false, logger: Logger })
 const {
   AppEvents,
+  AppCommands,
   UserCommands,
-  DisplayCommands,
-  CanvasCommands,
 } = createContext(ShopManager)
 
 const removeAllEvents = Monitor(ShopManager, {
-  // USER
   [UserCommands.SELECT_MASK.key]: [
-    DisplayCommands.RENDER_PHOTO_EDITOR
+    AppCommands.DISPLAY_PHOTO_EDITOR,
   ],
 
-  [UserCommands.UPLOAD_PHOTO.key]: [
-    DisplayCommands.RENDER_PHOTO_UPLOADING
+  [UserCommands.SELECT_TEXT.key]: [
+    AppCommands.DISPLAY_TEXT_EDITOR,
   ],
 
-  [UserCommands.ASSIGN_PHOTO.key]: [
-    DisplayCommands.RENDER_PHOTO
-  ],
-
-  [UserCommands.INSERT_TEXT.key]: [
-    DisplayCommands.RENDER_TEXT
-  ],
-
-  [UserCommands.SUBMIT.key]: [
-    DisplayCommands.RENDER_SUBMITTING_SCREEN
-  ],
-
-  // APP
   [AppEvents.STARTED.key]: [
-    DisplayCommands.MOUNT_APP,
-    DisplayCommands.RENDER_LOADING_SCREEN,
+    AppCommands.DISPLAY_LOADING_SCREEN,
   ],
 
   [AppEvents.PRODUCT_LOADED.key]: [
-    DisplayCommands.RENDER_APP,
-    CanvasCommands.CREATE_CANVAS,
+    AppCommands.DISPLAY_APP,
+    AppCommands.DISPLAY_CANVAS,
   ],
 
   [AppEvents.CANVAS_CREATED.key]: [
-    DisplayCommands.MOUNT_CANVAS,
-    CanvasCommands.RESIZE,
-  ],
-
-  [AppEvents.PHOTO_UPLOADED.key]: [
-    DisplayCommands.RENDER_UPLOAD_SUCCESS,
+    AppCommands.RESIZE_CANVAS,
   ],
 
   [AppEvents.PRODUCT_PERSONALIZE_SUBMITTED.key]: [
-    DisplayCommands.SHOW_THANK_YOU,
+    AppCommands.SHOW_THANK_YOU,
   ],
 
   [AppEvents.SHUT_DOWN.key]: [
@@ -89,5 +68,5 @@ async function start() {
   AppEvents.PRODUCT_LOADED(detail)
 
   // device events
-  debounceResize(CanvasCommands.RESIZE)
+  debounceResize(AppCommands.RESIZE_CANVAS)
 }

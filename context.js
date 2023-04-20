@@ -1,18 +1,34 @@
-import { createUserCommands } from './user-commands'
-import { createAppEvents } from './app-events'
-import { createDisplayCommands } from './display-commands'
-import { createCanvasCommands } from './canvas-commands'
+import { createCommands as createAppCommands } from '@/commands/app'
+import { reduce } from './utils'
+
+function createMessage(handler, eventNames) {
+  return reduce({}, eventNames, (events, eventName) => {
+    events[eventName] = handler.lazyEmit(eventName)
+    events[eventName].key = eventName
+    return events
+  })
+}
 
 export function createContext(manager) {
-  const AppEvents = createAppEvents(manager)
-  const UserCommands = createUserCommands(manager)
-  const DisplayCommands = createDisplayCommands(manager)
-  const CanvasCommands = createCanvasCommands(manager)
+  const AppEvents = createMessage(manager, [
+    'STARTED',
+    'PRODUCT_LOADED',
+    'PRODUCT_PERSONALIZE_SUBMITTED',
+    'CANVAS_CREATED',
+    'PHOTO_UPLOADED',
+    'SHUT_DOWN'
+  ])
+
+  const UserCommands = createMessage(manager, [
+    'SELECT_MASK',
+    'SELECT_TEXT',
+  ])
+
+  const AppCommands = createAppCommands(manager)
 
   return {
     AppEvents,
-    UserCommands,
-    DisplayCommands,
-    CanvasCommands,
+    AppCommands,
+    UserCommands
   }
 }

@@ -29,7 +29,7 @@ export function applyMaskConfig(obj) {
 
   item.on({
     'selected': () => {
-      item.selected()
+      item.notify()
       disableMouseOver(item)
       render(highlight(item))
     },

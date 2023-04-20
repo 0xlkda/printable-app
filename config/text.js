@@ -1,10 +1,9 @@
-import { clone, lockMovement, decorate } from '@/libs/fabric'
+import { decorate, lockMovement } from '@/libs/fabric'
 
 const handPointer = (i) => i.set({ hoverCursor: 'pointer' })
 
 export function applyTextConfig(obj) {
-  const item = clone(obj)
-  decorate(item, [handPointer, lockMovement])
-
+  const item = decorate(obj, [handPointer, lockMovement])
+  item.on('selected', () => item.notify())
   return item
 }

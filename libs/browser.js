@@ -16,3 +16,20 @@ export function debounceResize(callback, delay = DELTA) {
 export function debounceScroll(callback, delay = DELTA) {
   debounceWindowEvent('scroll', () => requestAnimationFrame(callback), delay)
 }
+
+export function createFontLoader(createUrl) {
+  return ({ name, filename }) => new FontFace(name, `url(${createUrl(filename)})`)
+}
+
+export async function addFontsToDocument(api, fontNames) {
+  const fonts = await api.getFonts(fontNames)
+  const fontLoaders = fonts.map(createFontLoader(api.createFontURL))
+
+  for (const loader of fontLoaders) {
+    const fontface = await loader.load()
+    if (!document.fonts.has(fontface)) {
+      document.fonts.add(fontface)
+    }
+  }
+}
+

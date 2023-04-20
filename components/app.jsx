@@ -1,6 +1,13 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import Personalize from './personalize'
+
+function Info({ background, masks, texts }) {
+  return (
+    <div>
+      hello {masks.length} {texts.length} {background.width} {background.height}
+    </div>
+  )
+}
 
 function Loading() {
   return <div>loading...</div>
@@ -10,8 +17,29 @@ function Submitting() {
   return <Loading />
 }
 
-export function createApp() {
-  const root = document.getElementById('personalize-app') || document.createElement('div')
+function PhotoEditor({ target }) {
+  return <div>Photo Editor {target.id}</div>
+}
+
+function TextEditor({ target }) {
+  return (
+    <div>
+      <textarea
+        style={{ width: '100%', maxWidth: '720px', boxSizing: 'border-box' }}
+        rows="4"
+        cols="1"
+        defaultValue={target.text}
+        onChange={(e) => {
+          target.text = e.target.value
+          target.canvas.requestRenderAll()
+        }}
+      />
+    </div>
+  )
+}
+
+export function createApp(appRoot) {
+  const root = appRoot || document.createElement('div')
   root.setAttribute('id', 'personalize-app')
 
   const reactRoot = createRoot(root)
@@ -30,13 +58,25 @@ export function createApp() {
     if (detail.state === 'LOADED') {
       const { background, masks, texts } = detail
 
+      let module
+
+      switch (detail.module) {
+      case 'Photo':
+        module = <PhotoEditor key={detail.target.id} target={detail.target} />
+        break
+
+      case 'Text':
+        module = <TextEditor key={detail.target.id} target={detail.target} />
+        break
+
+      default:
+        module = <Info key={detail.background.id} background={background} masks={masks} texts={texts} />
+        break
+      }
+
       return reactRoot.render(
         <React.StrictMode>
-          <Personalize
-            background={background}
-            masks={masks}
-            texts={texts}
-          />
+          {module}
         </React.StrictMode>
       )
     }
@@ -47,6 +87,8 @@ export function createApp() {
   function mount() {
     document.body.appendChild(root)
   }
+
+  mount()
 
   return { mount, render }
 }

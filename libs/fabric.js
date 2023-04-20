@@ -3,7 +3,7 @@ import { reduce } from '@/utils'
 
 const clone = fabric.util.object.clone
 const enlivenObjects = fabric.util.enlivenObjects
-const createCanvas = options => new fabric.Canvas('', options)
+const createCanvas = (options) => new fabric.Canvas('', options)
 
 // fabric alias & helpers
 export {
