@@ -1,4 +1,4 @@
-import { createApp } from './app.jsx'
+import { createApp } from '@/components/app.jsx'
 
 function div(text, id) {
   const div = document.createElement('div')
@@ -24,6 +24,10 @@ const DisplayCommands = {
   },
 
   // photo handle
+  RENDER_PHOTO_EDITOR: (mask) => {
+    console.log(mask)
+  },
+
   RENDER_PHOTO_UPLOADING: (photo) => {
     document.body.append(div('uploading ' + photo))
   },

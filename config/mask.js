@@ -1,5 +1,5 @@
-import COLORS from './colors'
-import { render, decorate, lockMovement } from './fabric-util'
+import COLORS from '@/assets/colors'
+import { render, decorate, lockMovement } from '@/libs/fabric'
 
 const handPointer = (i) => i.set({ hoverCursor: 'pointer' })
 const normalize = (i) => i.set({ fill: COLORS.primary, opacity: 0.1 })
@@ -29,6 +29,7 @@ export function applyMaskConfig(obj) {
 
   item.on({
     'selected': () => {
+      item.selected()
       disableMouseOver(item)
       render(highlight(item))
     },

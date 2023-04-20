@@ -1,22 +1,25 @@
-import { Logger, createEventBus } from 'medkit'
+import { Logger, createMessageBus } from 'medkit'
+import { debounceResize } from '@/libs/browser'
+import { unique } from '@/utils'
 import * as API from './api'
-import { createUserCommands } from './user-commands'
-import { createAppEvents } from './app-events'
-import { createDisplayCommands } from './display-commands'
-import { createCanvasCommands } from './canvas-commands'
 import { isBackground, isMask, isNotMask, isText, isPath } from './predicate'
-import { unique } from './util'
 import { Monitor } from './monitor'
-import { debounceResize }  from './browser'
+import { createContext } from './context'
 
-const ShopManager = createEventBus('shop-manager', 'browser', { logEmit: false, logger: Logger })
-const AppEvents = createAppEvents(ShopManager)
-const UserCommands = createUserCommands(ShopManager)
-const DisplayCommands = createDisplayCommands(ShopManager)
-const CanvasCommands = createCanvasCommands(ShopManager)
+const ShopManager = createMessageBus('shop-manager', 'browser', { logEmit: false, logger: Logger })
+const {
+  AppEvents,
+  UserCommands,
+  DisplayCommands,
+  CanvasCommands,
+} = createContext(ShopManager)
 
 const removeAllEvents = Monitor(ShopManager, {
   // USER
+  [UserCommands.SELECT_MASK.key]: [
+    DisplayCommands.RENDER_PHOTO_EDITOR
+  ],
+
   [UserCommands.UPLOAD_PHOTO.key]: [
     DisplayCommands.RENDER_PHOTO_UPLOADING
   ],

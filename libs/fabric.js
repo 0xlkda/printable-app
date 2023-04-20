@@ -1,5 +1,5 @@
 export { fabric } from 'fabric'
-import { reduce } from './util'
+import { reduce } from '@/utils'
 
 const clone = fabric.util.object.clone
 const enlivenObjects = fabric.util.enlivenObjects

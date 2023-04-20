@@ -1,4 +1,4 @@
-import { keys } from './util'
+import { keys } from '@/utils'
 
 const AppEvents = (handler) => {
   const events = {

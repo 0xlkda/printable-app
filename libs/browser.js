@@ -1,4 +1,4 @@
-import { debounce } from './util'
+import { debounce } from '@/utils'
 
 const slow = 1000 / 30 // 30fps
 const fast = 1000 / 60 // 60fps

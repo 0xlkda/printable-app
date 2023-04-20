@@ -1,7 +1,7 @@
+import { applyMaskConfig } from '@/config/mask'
+import { applyTextConfig } from '@/config/text'
+import { createCanvas, enlivenObjects, setBorderWidth } from '@/libs/fabric'
 import * as API from './api'
-import { applyMaskConfig } from './config-mask'
-import { applyTextConfig } from './config-text'
-import { createCanvas, enlivenObjects, setBorderWidth } from './fabric-util'
 
 function createFontLoader({ name, filename }) {
   return new FontFace(name, `url(${API.createFontURL(filename)})`)
@@ -31,6 +31,7 @@ const CanvasCommands = (handler) => {
     CREATE_CANVAS: ({ background, size, fonts, masks, texts, paths }) => {
       setBorderWidth(Math.floor(size.width / 200))
 
+      canvas.sendCommand = handler.emit.bind(handler)
       canvas.setDimensions(size)
       canvas.setDimensions({
         width: '100%', maxWidth: '720px',
@@ -47,6 +48,9 @@ const CanvasCommands = (handler) => {
 
       enlivenObjects(masks, (objects) => {
         const items = objects.map(applyMaskConfig)
+        items.forEach(item => {
+          item.selected = () => handler.emit('SELECT_MASK', item)
+        })
         canvas.add(...items)
       })
 

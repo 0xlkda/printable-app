@@ -7,6 +7,7 @@ const UserCommands = (handler) => {
     CHANGE_PRODUCT: handler.lazyEmit('CHANGE_PRODUCT'),
     CHANGE_PRODUCT_VARIANT: handler.lazyEmit('CHANGE_PRODUCT_VARIANT'),
 
+    SELECT_MASK: handler.lazyEmit('SELECT_MASK'),
     UPLOAD_PHOTO: handler.lazyEmit('UPLOAD_PHOTO'),
     ASSIGN_PHOTO: handler.lazyEmit('ASSIGN_PHOTO'),
     REPLACE_PHOTO: handler.lazyEmit('REPLACE_PHOTO'),

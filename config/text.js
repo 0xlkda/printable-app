@@ -1,4 +1,4 @@
-import { clone, lockMovement, decorate } from './fabric-util'
+import { clone, lockMovement, decorate } from '@/libs/fabric'
 
 const handPointer = (i) => i.set({ hoverCursor: 'pointer' })
 
