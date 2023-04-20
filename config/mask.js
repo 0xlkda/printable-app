@@ -6,12 +6,12 @@ const normalize = (i) => i.set({ fill: COLORS.primary, opacity: 0.1 })
 const highlight = (i, opacity = 0.5) => i.set({ fill: COLORS.primary, opacity })
 const absolutePositioned = (i) => i.set({ absolutePositioned: true })
 
-const handleMouseOut = e => render(normalize(e.target))
-const handleMouseOver = e => render(highlight(e.target))
+const handleMouseOut = (i) => () => render(normalize(i))
+const handleMouseOver = (i) => () => render(highlight(i))
 
 function enableMouseOver(i) {
-  i.on('mouseover', handleMouseOver)
-  i.on('mouseout', handleMouseOut)
+  i.on('mouseover', handleMouseOver(i))
+  i.on('mouseout', handleMouseOut(i))
   return i
 }
 

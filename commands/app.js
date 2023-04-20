@@ -1,19 +1,12 @@
+import { createApp } from '@/libs/react'
+import { createCanvas, enlivenObjects, setBorderWidth } from '@/libs/fabric'
+import { addFontsToDocument } from '@/libs/browser'
 import { applyMaskConfig } from '@/config/mask'
 import { applyTextConfig } from '@/config/text'
-import { createCanvas, enlivenObjects, setBorderWidth } from '@/libs/fabric'
-import { createApp } from '@/components/app.jsx'
-import { addFontsToDocument } from '@/libs/browser'
 import * as API from '@/api'
 
-function div(text, id) {
-  const div = document.createElement('div')
-  div.id = id
-  div.textContent = text
-  return div
-}
-
-const appRoot = document.getElementById('personalize-app')
-const app = createApp(appRoot)
+const rootElement = document.getElementById('personalize-app')
+const app = createApp(rootElement)
 const canvas = createCanvas({
   containerClass: 'personalize-canvas-container',
   enableRetinaScaling: false,
@@ -67,7 +60,7 @@ export function createCommands(handler) {
               })
 
             canvas.add(...items)
-            appRoot.prepend(canvas.wrapperEl)
+            rootElement.prepend(canvas.wrapperEl)
             handler.emit('CANVAS_CREATED', canvas)
           })
         })
@@ -98,7 +91,7 @@ export function createCommands(handler) {
     },
 
     SHOW_THANK_YOU: () => {
-      document.body.append(div('thank you!'))
+      document.body.append('THANK YOU')
     }
   }
 }

@@ -6,14 +6,25 @@
     "target": "es6",
     "baseUrl": ".",
     "paths":  {
+      "@/libs": ["./libs/index"],
       "@/libs/*": ["./libs/*"],
+
+      "@/config": ["./config/index"],
       "@/config/*": ["./config/*"],
+
+      "@/assets": ["./assets/index"],
       "@/assets/*": ["./assets/*"],
-      "@/api": ["./api/index.js"],
+
+      "@/api": ["./api/index"],
       "@/api/*": ["./api/*"],
-      "@/utils": ["./utils/index.js"],
+
+      "@/utils": ["./utils/index"],
       "@/utils/*": ["./utils/*"],
+
+      "@/components": ["./components/index"],
       "@/components/*": ["./components/*"],
+
+      "@/commands": ["./commands/index"],
       "@/commands/*": ["./commands/*"]
     }
   },

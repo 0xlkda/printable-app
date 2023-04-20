@@ -1,5 +1,12 @@
 import React from 'react'
-import { createRoot } from 'react-dom/client'
+
+export function Loading() {
+  return <div>loading...</div>
+}
+
+export function Submitting() {
+  return <Loading />
+}
 
 function Info({ background, masks, texts }) {
   return (
@@ -7,14 +14,6 @@ function Info({ background, masks, texts }) {
       hello {masks.length} {texts.length} {background.width} {background.height}
     </div>
   )
-}
-
-function Loading() {
-  return <div>loading...</div>
-}
-
-function Submitting() {
-  return <Loading />
 }
 
 function PhotoEditor({ target }) {
@@ -25,7 +24,7 @@ function TextEditor({ target }) {
   return (
     <div>
       <textarea
-        style={{ width: '100%', maxWidth: '720px', boxSizing: 'border-box' }}
+        style={{ width: '100%', maxWidth: '720px', boxSizing: 'border-box', resize: 'vertical' }}
         rows="4"
         cols="1"
         defaultValue={target.text}
@@ -38,57 +37,31 @@ function TextEditor({ target }) {
   )
 }
 
-export function createApp(appRoot) {
-  const root = appRoot || document.createElement('div')
-  root.setAttribute('id', 'personalize-app')
+export default function App({ detail }) {
+  const { background, masks, texts } = detail
 
-  const reactRoot = createRoot(root)
+  let module
 
-  function render(detail = {}) {
-    if (!root.isConnected) throw new Error('App must be mount before use')
+  switch (detail.module) {
+  case 'Photo':
+    module = <PhotoEditor key={detail.target.id} target={detail.target} />
+    break
 
-    if (detail.state === 'LOADING') {
-      return reactRoot.render(<Loading />)
-    }
+  case 'Text':
+    module = <TextEditor key={detail.target.id} target={detail.target} />
+    break
 
-    if (detail.state === 'SUBMITTING') {
-      return reactRoot.render(<Submitting />)
-    }
-
-    if (detail.state === 'LOADED') {
-      const { background, masks, texts } = detail
-
-      let module
-
-      switch (detail.module) {
-      case 'Photo':
-        module = <PhotoEditor key={detail.target.id} target={detail.target} />
-        break
-
-      case 'Text':
-        module = <TextEditor key={detail.target.id} target={detail.target} />
-        break
-
-      default:
-        module = <Info key={detail.background.id} background={background} masks={masks} texts={texts} />
-        break
-      }
-
-      return reactRoot.render(
-        <React.StrictMode>
-          {module}
-        </React.StrictMode>
-      )
-    }
-
-    throw new Error('Unknown state ' + detail.state)
+  default:
+    module = <Info key={detail.background.id} background={background} masks={masks} texts={texts} />
+    break
   }
 
-  function mount() {
-    document.body.appendChild(root)
-  }
-
-  mount()
-
-  return { mount, render }
+  return (
+    <React.StrictMode>
+      <div id="personalize-app-editor">
+        {module}
+      </div>
+    </React.StrictMode>
+  )
 }
+

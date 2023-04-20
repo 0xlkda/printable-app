@@ -1,16 +1,16 @@
 import COLORS from '@/assets/colors'
-import { render, decorate, lockMovement } from '@/libs/fabric'
+import { render, decorate, lockMovement, disableEdit } from '@/libs/fabric'
 
 const handPointer = (i) => i.set({ hoverCursor: 'pointer' })
 const normalize = (i) => i.set({ stroke: 'none', strokeWidth: 0 })
 const highlight = (i) => i.set({ stroke: COLORS.primary, strokeWidth: 2 })
 
-const handleMouseOut = (e) => render(normalize(e.target))
-const handleMouseOver = (e) => render(highlight(e.target))
+const handleMouseOut = (i) => () => render(normalize(i))
+const handleMouseOver = (i) => () => render(highlight(i))
 
 function enableMouseOver(i) {
-  i.on('mouseover', handleMouseOver)
-  i.on('mouseout', handleMouseOut)
+  i.on('mouseover', handleMouseOver(i))
+  i.on('mouseout', handleMouseOut(i))
   return i
 }
 
@@ -21,7 +21,7 @@ function disableMouseOver(i) {
 }
 
 export function applyTextConfig(obj) {
-  const item = decorate(obj, [handPointer, lockMovement])
+  const item = decorate(obj, [handPointer, lockMovement, disableEdit])
 
   // events setup 
   enableMouseOver(item)

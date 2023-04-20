@@ -36,6 +36,10 @@ export function lockMovement(object) {
   return object
 }
 
+export function disableEdit(target) {
+  return target.set('editable', false)
+}
+
 export function decorate(target, rules) {
   return reduce(clone(target), rules, (target, rule) => rule(target))
 }
