@@ -7,7 +7,6 @@ import { isBackground, isMask, isNotMask, isText, isPath } from '@/app/predicate
 import { applyMaskConfig } from '@/app/config/mask'
 import { applyTextConfig } from '@/app/config/text'
 import AppEvents from '@/app/events'
-import UserCommands from '@/user/commands'
 
 const app = createApp({ rootId: 'personalize-app' })
 const canvas = createCanvas({
@@ -63,26 +62,14 @@ export function displayCanvas({ background, size, fonts, masks, texts, paths }) 
   })
 
   enlivenObjects(masks, (objects) => {
-    const items = objects
-      .map(applyMaskConfig)
-      .map(item => {
-        item.notify = () => UserCommands.SELECT_MASK(item)
-        return item
-      })
-
+    const items = objects.map(applyMaskConfig)
     canvas.add(...items)
   })
 
   addFontsToDocument(API, fonts.map(font => font.replace(/[']+/g, '')))
     .then(() => {
       enlivenObjects(texts, (objects) => {
-        const items = objects
-          .map(applyTextConfig)
-          .map(item => {
-            item.notify = () => UserCommands.SELECT_TEXT(item)
-            return item
-          })
-
+        const items = objects.map(applyTextConfig)
         canvas.add(...items)
         app.root.prepend(canvas.wrapperEl)
         AppEvents.CANVAS_LOADED(canvas)
