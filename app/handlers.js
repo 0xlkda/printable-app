@@ -3,10 +3,10 @@ import { createCanvas, enlivenObjects, setBorderWidth } from '@/libs/fabric'
 import { debounceResize, addFontsToDocument } from '@/libs/browser'
 import * as API from '@/api'
 import { unique } from '@/utils'
+import AppEvents from '@/app/events'
 import { isBackground, isMask, isNotMask, isText, isPath } from '@/app/predicate'
 import { applyMaskConfig } from '@/app/config/mask'
 import { applyTextConfig } from '@/app/config/text'
-import AppEvents from '@/app/events'
 
 const app = createApp({ rootId: 'personalize-app' })
 const canvas = createCanvas({
