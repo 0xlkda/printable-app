@@ -3,20 +3,22 @@ import { createCanvas, enlivenObjects, setBorderWidth } from '@/libs/fabric'
 import { debounceResize, addFontsToDocument } from '@/libs/browser'
 import * as API from '@/api'
 import { unique } from '@/utils'
-import AppCommands from '@/app/commands'
-import AppEvents from '@/app/events'
 import { isBackground, isMask, isNotMask, isText, isPath } from '@/app/predicate'
 import { applyMaskConfig } from '@/app/config/mask'
 import { applyTextConfig } from '@/app/config/text'
+import AppEvents from '@/app/events'
 import UserCommands from '@/user/commands'
 
-const rootElement = document.getElementById('personalize-app')
-const app = createApp(rootElement)
-globalThis.canvas = createCanvas({
+const app = createApp({ rootId: 'personalize-app' })
+const canvas = createCanvas({
   containerClass: 'personalize-canvas-container',
   enableRetinaScaling: false,
   allowTouchScrolling: true,
   selection: false
+})
+
+canvas.on('selection:cleared', () => {
+  app.render({ state: 'LOADED' })
 })
 
 export async function start(id) {
@@ -37,7 +39,7 @@ export async function start(id) {
   AppEvents.PRODUCT_LOADED(detail)
 
   // device events
-  debounceResize(AppCommands.RESIZE_CANVAS)
+  debounceResize(resizeCanvas)
 }
 
 export function displayApp(props) {
@@ -46,7 +48,6 @@ export function displayApp(props) {
 
 export function displayCanvas({ background, size, fonts, masks, texts, paths }) {
   setBorderWidth(Math.floor(size.width / 200))
-
   canvas.setDimensions(size)
   canvas.setDimensions({
     width: '100%', maxWidth: '720px',
@@ -83,7 +84,7 @@ export function displayCanvas({ background, size, fonts, masks, texts, paths }) 
           })
 
         canvas.add(...items)
-        rootElement.prepend(canvas.wrapperEl)
+        app.root.prepend(canvas.wrapperEl)
         AppEvents.CANVAS_LOADED(canvas)
       })
     })

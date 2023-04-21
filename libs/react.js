@@ -2,11 +2,10 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App, { Loading, Submitting } from '@/app/components/app'
 
-export function createApp(appRoot) {
-  const root = appRoot || document.createElement('div')
+
+export function createApp({ rootId }) {
+  const root = document.getElementById(rootId)
   const reactRoot = createRoot(root)
-  root.setAttribute('id', 'personalize-app')
-  document.body.appendChild(root)
 
   function render(detail = {}) {
     if (!root.isConnected) throw new Error('App must be mount before use')
@@ -30,6 +29,7 @@ export function createApp(appRoot) {
   }
 
   return {
+    root,
     render
   }
 }

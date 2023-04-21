@@ -1,13 +1,11 @@
 export { fabric } from 'fabric'
 import { reduce } from '@/utils'
 
-const clone = fabric.util.object.clone
 const enlivenObjects = fabric.util.enlivenObjects
 const createCanvas = (options) => new fabric.Canvas('', options)
 
 // fabric alias & helpers
 export {
-  clone,
   enlivenObjects,
   createCanvas
 }
@@ -41,7 +39,7 @@ export function disableEdit(target) {
 }
 
 export function decorate(target, rules) {
-  return reduce(clone(target), rules, (target, rule) => rule(target))
+  return reduce(target, rules, (target, rule) => rule(target))
 }
 
 export function render(object) {

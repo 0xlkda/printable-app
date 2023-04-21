@@ -21,25 +21,26 @@ function PhotoEditor({ target }) {
 }
 
 function TextEditor({ target }) {
+  function handleTextChanged(e) {
+    const ok = () => e.target.style.removeProperty('color')
+    const error = () => e.target.style.setProperty('color', 'red')
+    target.fire('text:changed', { ok, error, value: e.target.value })
+  }
+
   return (
     <div>
       <textarea
         style={{ width: '100%', maxWidth: '720px', boxSizing: 'border-box', resize: 'vertical' }}
-        rows="4"
-        cols="1"
+        rows={target.maxLines}
+        placeholder={target.defaultText}
         defaultValue={target.text}
-        onChange={(e) => {
-          target.text = e.target.value
-          target.canvas.requestRenderAll()
-        }}
+        onChange={handleTextChanged}
       />
     </div>
   )
 }
 
 export default function App({ detail }) {
-  const { background, masks, texts } = detail
-
   let module
 
   switch (detail.module) {
@@ -52,7 +53,7 @@ export default function App({ detail }) {
     break
 
   default:
-    module = <Info key={detail.background.id} background={background} masks={masks} texts={texts} />
+    module = <div>Click on design to edit</div>
     break
   }
 
@@ -64,4 +65,3 @@ export default function App({ detail }) {
     </React.StrictMode>
   )
 }
-

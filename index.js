@@ -25,4 +25,4 @@ Manager.onboard({
 })
 
 Manager.work()
-User.OPEN_APP('product-collage.json')
+User.OPEN_APP('product.json')

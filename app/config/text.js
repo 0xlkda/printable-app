@@ -22,6 +22,9 @@ function disableMouseOver(i) {
 
 export function applyTextConfig(obj) {
   const item = decorate(obj, [handPointer, lockMovement, disableEdit])
+  item.set('maxLines', Number(item.maxLines) || 1)
+  item.set('defaultText', item.text)
+  item.set('defaultWidth', item.width)
 
   // events setup 
   enableMouseOver(item)
@@ -35,7 +38,20 @@ export function applyTextConfig(obj) {
     'deselected': () => {
       enableMouseOver(item)
       render(normalize(item))
-    }
+    },
+    'text:changed': ({ error, ok, value }) => {
+      item.set('text', value || item.defaultText)
+
+      if (item.textLines.length <= item.maxLines) {
+        ok()
+      } else {
+        error()
+        item.set('text', item.textLines.slice(0, item.maxLines).join('\n'))
+      }
+
+      item.set('width', item.defaultWidth)
+      item.canvas.requestRenderAll()
+    },
   })
 
   return item
