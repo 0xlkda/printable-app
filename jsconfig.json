@@ -6,29 +6,23 @@
     "target": "es6",
     "baseUrl": ".",
     "paths":  {
+      "@/api": ["./api/index"],
+      "@/api/*": ["./api/*"],
+
       "@/app": ["./app/index"],
       "@/app/*": ["./app/*"],
 
       "@/libs": ["./libs/index"],
       "@/libs/*": ["./libs/*"],
 
-      "@/config": ["./config/index"],
-      "@/config/*": ["./config/*"],
+      "@/manager": ["./manager/index"],
+      "@/manager/*": ["./manager/*"],
 
-      "@/assets": ["./assets/index"],
-      "@/assets/*": ["./assets/*"],
-
-      "@/api": ["./api/index"],
-      "@/api/*": ["./api/*"],
+      "@/user": ["./user/index"],
+      "@/user/*": ["./user/*"],
 
       "@/utils": ["./utils/index"],
-      "@/utils/*": ["./utils/*"],
-
-      "@/components": ["./components/index"],
-      "@/components/*": ["./components/*"],
-
-      "@/commands": ["./commands/index"],
-      "@/commands/*": ["./commands/*"]
+      "@/utils/*": ["./utils/*"]
     }
   },
   "exclude": [

@@ -5,7 +5,7 @@ export function Loading() {
 }
 
 export function Submitting() {
-  return <Loading />
+  return <div>submitting...</div>
 }
 
 function Info({ background, masks, texts }) {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import App, { Loading, Submitting } from '@/components/app'
+import App, { Loading, Submitting } from '@/app/components/app'
 
 export function createApp(appRoot) {
   const root = appRoot || document.createElement('div')

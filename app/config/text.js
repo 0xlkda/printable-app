@@ -1,5 +1,5 @@
-import COLORS from '@/assets/colors'
 import { render, decorate, lockMovement, disableEdit } from '@/libs/fabric'
+import COLORS from '@/app/assets/colors'
 
 const handPointer = (i) => i.set({ hoverCursor: 'pointer' })
 const normalize = (i) => i.set({ stroke: 'none', strokeWidth: 0 })
