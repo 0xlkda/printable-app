@@ -1,5 +1,6 @@
 import { render, decorate, lockMovement, disableEdit } from '@/libs/fabric'
 import COLORS from '@/app/assets/colors'
+import UserCommands from '@/user/commands'
 
 const handPointer = (i) => i.set({ hoverCursor: 'pointer' })
 const normalize = (i) => i.set({ stroke: 'none', strokeWidth: 0 })
@@ -31,7 +32,7 @@ export function applyTextConfig(obj) {
 
   item.on({
     'selected': () => {
-      item.notify()
+      UserCommands.SELECT_TEXT(item)
       disableMouseOver(item)
       render(normalize(item))
     },
