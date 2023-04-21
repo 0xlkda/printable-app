@@ -50,7 +50,7 @@ export function applyTextConfig(obj) {
       }
 
       item.set('width', item.defaultWidth)
-      item.canvas.requestRenderAll()
+      render(item)
     },
   })
 
