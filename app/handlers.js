@@ -12,7 +12,7 @@ import UserCommands from '@/user/commands'
 
 const rootElement = document.getElementById('personalize-app')
 const app = createApp(rootElement)
-const canvas = createCanvas({
+globalThis.canvas = createCanvas({
   containerClass: 'personalize-canvas-container',
   enableRetinaScaling: false,
   allowTouchScrolling: true,
@@ -25,12 +25,13 @@ export async function start(id) {
   const product = await API.getProduct(id)
   if (!product) throw new Error('Product not found')
 
-  const size = product.size
+  const getSize = item => ({ width: item.width, height: item.height })
   const background = product.objects.find(isBackground)
   const masks = product.objects.filter(isMask)
   const texts = product.objects.filter(isText)
   const fonts = unique(texts.map(text => text.fontFamily))
   const paths = product.objects.filter(isNotMask).filter(isPath)
+  const size = product.size || getSize(background)
   const detail = { background, size, masks, texts, fonts, paths }
 
   AppEvents.PRODUCT_LOADED(detail)
