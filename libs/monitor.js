@@ -25,6 +25,8 @@ export function Monitor(brief, handleError) {
 export function createMessage(name, { instant } = { instant: false }) {
   const send = instant ? MessageBus.emit : MessageBus.lazyEmit
   const message = send.call(MessageBus, name)
+  if (instant) return message
+  
   message.toString = () => name
   message.key = name
   return message
