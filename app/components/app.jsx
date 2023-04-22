@@ -8,14 +8,6 @@ export function Submitting() {
   return <div>submitting...</div>
 }
 
-function Info({ background, masks, texts }) {
-  return (
-    <div>
-      hello {masks.length} {texts.length} {background.width} {background.height}
-    </div>
-  )
-}
-
 function PhotoEditor({ target }) {
   return <div>Photo Editor {target.id}</div>
 }
@@ -31,7 +23,7 @@ function TextEditor({ target }) {
     <div>
       <textarea
         style={{ width: '100%', maxWidth: '720px', boxSizing: 'border-box', resize: 'vertical' }}
-        rows={target.maxLines}
+        rows={target.maxLines + 2}
         placeholder={target.defaultText}
         defaultValue={target.text}
         onChange={handleTextChanged}
