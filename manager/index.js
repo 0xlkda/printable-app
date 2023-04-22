@@ -20,24 +20,24 @@ const Manager = {
     const turnOff = Monitor({
       ...this.userCommands,
 
-      [AppEvents.STARTED.key]: [
+      [AppEvents.STARTED]: [
         AppCommands.DISPLAY_LOADING_SCREEN,
       ],
 
-      [AppEvents.PRODUCT_LOADED.key]: [
+      [AppEvents.PRODUCT_LOADED]: [
         AppCommands.DISPLAY_APP,
         AppCommands.DISPLAY_CANVAS,
       ],
 
-      [AppEvents.CANVAS_LOADED.key]: [
+      [AppEvents.CANVAS_LOADED]: [
         AppCommands.RESIZE_CANVAS,
       ],
 
-      [AppEvents.PRODUCT_PERSONALIZE_SUBMITTED.key]: [
+      [AppEvents.PRODUCT_PERSONALIZE_SUBMITTED]: [
         AppCommands.SHOW_THANK_YOU,
       ],
 
-      [AppEvents.SHUT_DOWN.key]: [
+      [AppEvents.SHUT_DOWN]: [
         () => turnOff()
       ],
     }, (error) => {
