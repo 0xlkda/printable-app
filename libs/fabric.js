@@ -25,13 +25,13 @@ export function setBorderWidth(value) {
   return apply(value)
 }
 
-export function lockMovement(object) {
-  object.set({
+export function lockMovement(target) {
+  target.set({
     lockMovementX: true,
     lockMovementY: true,
   })
 
-  return object
+  return target
 }
 
 export function disableEdit(target) {
@@ -42,6 +42,6 @@ export function decorate(target, rules) {
   return reduce(target, rules, (target, rule) => rule(target))
 }
 
-export function render(object) {
-  return object.canvas?.requestRenderAll()
+export function render(target) {
+  return target.canvas?.requestRenderAll()
 }
