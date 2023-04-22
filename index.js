@@ -6,19 +6,19 @@ import App from '@/app/commands'
 Manager.onboard({
   logger: Logger,
   userCommands: {
-    [User.OPEN_APP.key]: [
+    [User.OPEN_APP]: [
       App.START,
     ],
 
-    [User.SELECT_MASK.key]: [
+    [User.SELECT_MASK]: [
       App.DISPLAY_PHOTO_EDITOR,
     ],
 
-    [User.SELECT_TEXT.key]: [
+    [User.SELECT_TEXT]: [
       App.DISPLAY_TEXT_EDITOR,
     ],
 
-    [User.SUBMIT.key]: [
+    [User.SUBMIT]: [
       App.DISPLAY_SUBMITTING_SCREEN,
     ],
   }
