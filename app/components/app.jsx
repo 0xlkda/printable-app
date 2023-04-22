@@ -17,16 +17,17 @@ function TextEditor({ target }) {
     const ok = () => e.target.style.removeProperty('color')
     const error = () => e.target.style.setProperty('color', 'red')
     target.fire('text:changed', { ok, error, value: e.target.value })
+    e.target.style.height = e.target.scrollHeight + 'px'
   }
 
   return (
     <div>
       <textarea
-        style={{ width: '100%', maxWidth: '720px', boxSizing: 'border-box', resize: 'vertical' }}
+        style={{ height: 'auto', width: '100%', maxWidth: '720px', boxSizing: 'border-box', resize: 'none' }}
         rows={target.maxLines + 2}
         placeholder={target.defaultText}
         defaultValue={target.text}
-        onChange={handleTextChanged}
+        onInput={handleTextChanged}
       />
     </div>
   )

@@ -1,4 +1,4 @@
-export { fabric } from 'fabric'
+import { fabric } from 'fabric'
 import { reduce } from '@/utils'
 
 const enlivenObjects = fabric.util.enlivenObjects
@@ -6,6 +6,7 @@ const createCanvas = (options) => new fabric.Canvas('', options)
 
 // fabric alias & helpers
 export {
+  fabric,
   enlivenObjects,
   createCanvas
 }
