@@ -1,5 +1,10 @@
 import { createApp } from '@/libs/react'
-import { createCanvas, enlivenObjects, setBorderWidth } from '@/libs/fabric'
+import {
+  createCanvas,
+  setCanvasDimensions,
+  enlivenObjects,
+  shouldRenderControls,
+} from '@/libs/fabric'
 import { debounceResize, addFontsToDocument } from '@/libs/browser'
 import * as API from '@/api'
 import { unique } from '@/utils'
@@ -13,11 +18,24 @@ const canvas = createCanvas({
   containerClass: 'personalize-canvas-container',
   enableRetinaScaling: false,
   allowTouchScrolling: true,
-  selection: false
+  selection: false,
 })
 
-canvas.on('selection:cleared', () => {
-  app.render({ state: 'LOADED' })
+// DEBUG:
+globalThis.canvas = canvas
+
+function handleSelectionChange(e) {
+  const target = e.selected[0]
+  const renderControls = shouldRenderControls(target, { whitelist: ['image'] })
+  renderControls ? target.showControls() : target.hideControls()
+}
+
+canvas.on({
+  'selection:created': handleSelectionChange,
+  'selection:updated': handleSelectionChange,
+  'selection:cleared': () => {
+    app.render({ state: 'LOADED' })
+  }
 })
 
 export async function start(id) {
@@ -38,39 +56,32 @@ export async function start(id) {
   AppEvents.PRODUCT_LOADED(detail)
 
   // device events
-  debounceResize(resizeCanvas)
+  debounceResize(updateCanvasContainerHeight)
 }
 
 export function displayApp(props) {
   app.render({ ...props, state: 'LOADED' })
 }
 
-export function displayCanvas({ background, size, fonts, masks, texts, paths }) {
-  setBorderWidth(Math.floor(size.width / 200))
-  canvas.setDimensions(size)
-  canvas.setDimensions({
-    width: '100%', maxWidth: '720px',
-    height: 'auto', maxHeight: '720px'
-  }, { cssOnly: true })
+export function displayCanvas(detail) {
+  setCanvasDimensions(canvas, detail.size)
 
-  enlivenObjects([background], ([item]) => {
-    canvas.insertAt(item, 0)
+  enlivenObjects([detail.background], ([background]) => {
+    canvas.insertAt(background, 0)
   })
 
-  enlivenObjects(paths, (objects) => {
-    canvas.add(...objects)
+  enlivenObjects(detail.paths, (paths) => {
+    canvas.add(...paths)
   })
 
-  enlivenObjects(masks, (objects) => {
-    const items = objects.map(applyMaskConfig)
-    canvas.add(...items)
+  enlivenObjects(detail.masks, (masks) => {
+    canvas.add(...masks.map(applyMaskConfig))
   })
 
-  addFontsToDocument(API, fonts.map(font => font.replace(/[']+/g, '')))
+  addFontsToDocument(API, detail.fonts.map(font => font.replace(/[']+/g, '')))
     .then(() => {
-      enlivenObjects(texts, (objects) => {
-        const items = objects.map(applyTextConfig)
-        canvas.add(...items)
+      enlivenObjects(detail.texts, (texts) => {
+        canvas.add(...texts.map(applyTextConfig))
         app.root.prepend(canvas.wrapperEl)
         AppEvents.CANVAS_LOADED(canvas)
       })
@@ -78,7 +89,7 @@ export function displayCanvas({ background, size, fonts, masks, texts, paths }) 
     .catch(error => console.log('CANVAS_CREATE_ERROR', error))
 }
 
-export function resizeCanvas() {
+export function updateCanvasContainerHeight() {
   const canvasEl = canvas.getElement()
   const container = canvas.wrapperEl
   if (!container) return

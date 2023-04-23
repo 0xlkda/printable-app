@@ -1,59 +1,62 @@
 import { render, decorate, lockMovement, disableEdit } from '@/libs/fabric'
 import COLORS from '@/app/assets/colors'
 import UserCommands from '@/user/commands'
+import AppCommands from '@/app/commands'
 
-const handPointer = (i) => i.set({ hoverCursor: 'pointer' })
-const normalize = (i) => i.set({ stroke: 'none', strokeWidth: 0 })
-const highlight = (i) => i.set({ stroke: COLORS.primary, strokeWidth: 2 })
+const handPointer = (textbox) => textbox.set({ hoverCursor: 'pointer' })
+const clickable = (textbox) => textbox.set({ stroke: 'none', strokeWidth: 0 })
+const highlight = (textbox) => textbox.set({ stroke: COLORS.primary, strokeWidth: 2 })
 
-const handleMouseOut = (i) => () => render(normalize(i))
-const handleMouseOver = (i) => () => render(highlight(i))
+const handleMouseOut = (textbox) => () => render(clickable(textbox))
+const handleMouseOver = (textbox) => () => render(highlight(textbox))
 
-function enableMouseOver(i) {
-  i.on('mouseover', handleMouseOver(i))
-  i.on('mouseout', handleMouseOut(i))
-  return i
+function enableMouseOver(textbox) {
+  textbox.on('mouseover', handleMouseOver(textbox))
+  textbox.on('mouseout', handleMouseOut(textbox))
+  return textbox
 }
 
-function disableMouseOver(i) {
-  i.off('mouseover')
-  i.off('mouseout')
-  return i
+function disableMouseOver(textbox) {
+  textbox.off('mouseover')
+  textbox.off('mouseout')
+  return textbox
 }
 
 export function applyTextConfig(obj) {
-  const item = decorate(obj, [handPointer, lockMovement, disableEdit])
-  item.set('maxLines', Number(item.maxLines) || 1)
-  item.set('defaultText', item.text)
-  item.set('defaultWidth', item.width)
+  const textbox = decorate(obj, [handPointer, lockMovement, disableEdit])
+
+  textbox.set('maxLines', Number(textbox.maxLines) || 1)
+  textbox.set('defaultText', textbox.text)
+  textbox.set('defaultWidth', textbox.width)
 
   // events setup 
-  enableMouseOver(item)
+  enableMouseOver(textbox)
 
-  item.on({
+  textbox.on({
     'selected': () => {
-      UserCommands.SELECT_TEXT(item)
-      disableMouseOver(item)
-      render(normalize(item))
+      UserCommands.SELECT_TEXT(textbox)
+      disableMouseOver(textbox)
+      render(clickable(textbox))
     },
     'deselected': () => {
-      enableMouseOver(item)
-      render(normalize(item))
+      AppCommands.DISPLAY_APP({ state: 'LOADED' })
+      enableMouseOver(textbox)
+      render(clickable(textbox))
     },
     'text:changed': ({ error, ok, value }) => {
-      item.set('text', value || item.defaultText)
+      textbox.set('text', value || textbox.defaultText)
 
-      if (item.textLines.length <= item.maxLines) {
+      if (textbox.textLines.length <= textbox.maxLines) {
         ok()
       } else {
         error()
-        item.set('text', item.textLines.slice(0, item.maxLines).join('\n'))
+        textbox.set('text', textbox.textLines.slice(0, textbox.maxLines).join('\n'))
       }
 
-      item.set('width', item.defaultWidth)
-      render(item)
+      textbox.set('width', textbox.defaultWidth)
+      render(textbox)
     },
   })
 
-  return item
+  return textbox
 }

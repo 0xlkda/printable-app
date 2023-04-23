@@ -30,7 +30,7 @@ const Manager = {
       ],
 
       [AppEvents.CANVAS_LOADED]: [
-        AppCommands.RESIZE_CANVAS,
+        AppCommands.UPDATE_CANVAS_CONTAINER_HEIGHT,
       ],
 
       [AppEvents.PRODUCT_PERSONALIZE_SUBMITTED]: [

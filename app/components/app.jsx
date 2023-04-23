@@ -9,7 +9,24 @@ export function Submitting() {
 }
 
 function PhotoEditor({ target }) {
-  return <div>Photo Editor {target.id}</div>
+  function onFileSelected(e) {
+    const file = e.target.files[0]
+    target.fire('photo:uploaded', { photoUrl: URL.createObjectURL(file) })
+  }
+
+  return (
+    <div style={{ maxWidth: '720px', maxHeight: '720px' }}>
+      <label htmlFor={target.id}>Upload</label>
+      <input
+        hidden
+        type="file"
+        id={target.id}
+        name={target.id}
+        multiple={false}
+        onChange={onFileSelected}
+      />
+    </div>
+  )
 }
 
 function TextEditor({ target }) {
@@ -17,13 +34,16 @@ function TextEditor({ target }) {
     const ok = () => e.target.style.removeProperty('color')
     const error = () => e.target.style.setProperty('color', 'red')
     target.fire('text:changed', { ok, error, value: e.target.value })
-    e.target.style.height = e.target.scrollHeight + 'px'
+
+    if (e.target.offsetHeight < e.target.scrollHeight) {
+      e.target.style.height = e.target.scrollHeight + 'px'
+    }
   }
 
   return (
     <div>
       <textarea
-        style={{ height: 'auto', width: '100%', maxWidth: '720px', boxSizing: 'border-box', resize: 'none' }}
+        style={{ width: '100%', maxWidth: '720px', boxSizing: 'border-box', resize: 'vertical' }}
         rows={target.maxLines + 2}
         placeholder={target.defaultText}
         defaultValue={target.text}

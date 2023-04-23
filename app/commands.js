@@ -5,7 +5,7 @@ export default {
   START: handlers.start,
   DISPLAY_APP: handlers.displayApp,
   DISPLAY_CANVAS: handlers.displayCanvas,
-  RESIZE_CANVAS: handlers.resizeCanvas,
+  UPDATE_CANVAS_CONTAINER_HEIGHT: handlers.updateCanvasContainerHeight,
   DISPLAY_PHOTO_EDITOR: handlers.displayPhotoEditor,
   DISPLAY_TEXT_EDITOR: handlers.displayTextEditor,
   DISPLAY_LOADING_SCREEN: handlers.displayLoadingScreen,

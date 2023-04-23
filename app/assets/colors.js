@@ -11,7 +11,9 @@ const green = {
 }
 
 export default {
+  black: 'black',
+  white: 'white',
   primary: green.default,
   secondary: blue.default,
-  error: red.default
+  error: red.default,
 }

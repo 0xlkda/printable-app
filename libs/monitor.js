@@ -1,7 +1,7 @@
 import { createMessageBus } from 'medkit'
 import { keys } from '@/utils'
 
-const MessageBus = createMessageBus('message-manager', 'browser', { logEmit: true })
+const MessageBus = createMessageBus('message-manager', 'browser', { logEmit: false })
 
 export function Monitor(brief, handleError) {
   const messages = keys(brief)

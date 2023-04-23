@@ -1,4 +1,4 @@
-export const keys = Object.keys
+export const keys = Object.getOwnPropertyNames
 export const values = Object.values
 
 export function noop() { }

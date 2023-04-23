@@ -33,3 +33,8 @@ export async function addFontsToDocument(api, fontNames) {
   }
 }
 
+export function createImg(src) {
+  const img = document.createElement('img')
+  img.src = src
+  return img
+}
